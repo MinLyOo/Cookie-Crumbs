@@ -1,0 +1,49 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+  background: #f5f7fa;
+  color: #303133;
+  min-height: 100vh;
+}
+
+#app {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 96px;
+}
+
+.section {
+  margin-bottom: 48px;
+}
+
+.section-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #303133;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #409EFF;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.section-hint {
+  font-size: 13px;
+  font-weight: 400;
+  color: #909399;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c0c4cc;
+  border-radius: 3px;
+}

@@ -1,0 +1,14 @@
+{
+  "name": "cookie-crumbs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "🍪 Cookie Crumbs - 游戏活动日历展示平台",
+  "scripts": {
+    "dev": "node dev.js",
+    "dev:api": "cd calendarapi && npm run dev",
+    "dev:visitor": "cd visitorapp && npm run dev",
+    "dev:admin": "cd adminapp && npm run dev",
+    "seed": "cd calendarapi && node seed.js"
+  },
+  "license": "MIT"
+}
