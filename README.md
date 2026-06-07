@@ -1,6 +1,6 @@
 # Cookie Crumbs
 
-游戏活动日历展示平台 — 以可视化时间轴展示游戏活动，搭配社区互动系统，让玩家不错过每一个精彩活动。
+游戏活动日历展示平台 — 以可视化时间轴展示游戏活动，搭配简单的互动系统，让玩家不错过每一个精彩活动。
 
 [![Vue 3](https://img.shields.io/badge/Vue-3.4-4FC08D?logo=vue.js)](https://vuejs.org)
 [![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite)](https://vitejs.dev)
@@ -11,34 +11,14 @@
 
 ## 项目简介
 
-Cookie Crumbs 是一个基于 Vue 3 + Express 的全栈游戏活动日历应用。它以 vis-timeline 甘特图直观展示活动时间线，支持三种活动类型（常规活动 / 卡池 / 福利），并提供简单互动功能——访客可以通过表情表态和拼词留言参与讨论。
+Cookie Crumbs 是一个基于 Vue 3 + Express 的全栈游戏活动日历应用。它以 vis-timeline 甘特图直观展示活动时间线，支持三种活动类型（常规活动 / 卡池 / 福利），访客可以通过表情表态和拼词留言参与互动。
 
 项目包含三个独立模块：访客端、管理端和后端 API，全部使用 JavaScript 编写。
 
 ## 功能特性
 
-### 访客端
-
-| 功能 | 说明 |
-|------|------|
-| 活动日历 | vis-timeline 甘特图展示，按活动/卡池/福利分组 |
-| 表情表态 | 为每个活动添加表情反应，实时计数显示 |
-| 拼词留言 | 从预置词库中选词组合留言，支持附加表情 |
-| 留言点赞 | 访客可对任意留言点赞或取消 |
-| ICS 订阅 | 一键订阅活动日历到系统日历 / Google Calendar |
-| 意见反馈 | 悬浮按钮触发，提交标题+内容+联系方式 |
-| 移动端适配 | 响应式布局，支持横屏提示 |
-
-### 管理端
-
-| 功能 | 说明 |
-|------|------|
-| 仪表盘 | 统计卡片（活动数/浏览量/ICS 订阅/拉取次数）+ ECharts 日访问趋势图 |
-| 活动管理 | 创建/编辑/删除活动，支持图片上传压缩、颜色自定义 |
-| 评论管理 | 卡片式展示所有留言 |
-| 反馈管理 | 状态流转（未读 → 已读 → 已处理） |
-| 系统设置 | 开发者注编辑（保留修改历史） |
-| 数据库备份 | 手动创建/恢复/下载，7 天自动清理旧备份 |
+- **访客端** — 活动日历甘特图、表情表态、拼词留言、ICS 日历订阅
+- **管理端** — 活动管理、仪表盘统计、反馈管理、数据库备份
 
 ## 技术栈
 
@@ -67,8 +47,8 @@ Cookie Crumbs/
 │   └── vite.config.js
 │
 ├── calendarapi/                # 后端 API（Express）
-│   ├── controllers/            # 6 个业务控制器
-│   ├── routes/                 # 8 个路由模块
+│   ├── controllers/            # 业务控制器
+│   ├── routes/                 # 路由模块
 │   ├── middleware/             # JWT 认证 / 可选认证 / 备份密钥
 │   ├── utils/                  # 备份工具 / ICS 生成
 │   ├── db.js                   # 数据库初始化 + 迁移
@@ -80,6 +60,7 @@ Cookie Crumbs/
 │   ├── ecosystem.config.js     # PM2 进程管理配置
 │   └── deploy.sh               # 一键部署脚本
 │
+├── dev.js                      # 一键启动开发环境
 └── package.json                # 根工作区脚本
 ```
 
@@ -96,18 +77,28 @@ cd ..
 
 # 2. 配置环境变量
 cp calendarapi/.env.example calendarapi/.env
-# 编辑 calendarapi/.env，修改 JWT_SECRET 和 ADMIN_PASSWORD
+# 编辑 calendarapi/.env，按需修改配置
 
 # 3. 初始化数据库
 cd calendarapi && node seed.js && cd ..
 
-# 4. 启动开发服务器（三个终端窗口）
-cd calendarapi && node index.js         # API      → http://localhost:30001
-cd visitorapp  && npm run dev            # 访客端   → http://localhost:51731
-cd adminapp    && npm run dev            # 管理端   → http://localhost:51741
+# 4. 启动开发服务器
+node dev.js
+#或者 
+npm run dev       # 一键启动 API + 访客端 + 管理端
 ```
 
-默认管理员账号：`admin`，密码见 `.env` 中的 `ADMIN_PASSWORD`。
+`dev.js` 会自动启动三个服务，并检查释放端口占用：
+
+| 服务 | 地址 |
+|------|------|
+| 后端 API | http://localhost:30001 |
+| 访客端 | http://localhost:51731 |
+| 管理端 | http://localhost:51741 |
+
+**默认管理员账号：** 用户名 `admin`，密码 `admin123`（见 `.env.example`）。
+
+> 公网部署时建议修改`.env`中的环境变量，比如`JWT_SECRET`、`ADMIN_PASSWORD` 和 `BACKUP_SECRET_KEY`等。
 
 ## 生产构建
 
@@ -116,17 +107,17 @@ cd visitorapp && npm run build    # 输出 → visitorapp/dist/
 cd adminapp && npm run build      # 输出 → adminapp/dist/
 ```
 
-构建产物为纯静态文件，配合 Nginx 反向代理部署。后端使用 PM2 或 systemd 守护进程。
+构建产物为纯静态文件，配合 Nginx 反向代理部署。后端使用 PM2 或 systemd 守护进程。可参考 `deploy/` 目录中的配置模板。
 
 ## 环境变量
 
-| 变量 | 说明 | 示例 |
-|------|------|------|
+| 变量 | 说明 | 开发默认值 |
+|------|------|-----------|
 | `PORT` | API 服务端口 | `30001` |
-| `JWT_SECRET` | 登录令牌签名密钥（必改） | `openssl rand -hex 32` |
+| `JWT_SECRET` | 登录令牌签名密钥 | 见 `.env.example` |
 | `ADMIN_USERNAME` | 管理员用户名 | `admin` |
-| `ADMIN_PASSWORD` | 管理员密码（必改） | 强密码 |
-| `BACKUP_SECRET_KEY` | 备份操作验证密钥（必改） | `openssl rand -hex 16` |
+| `ADMIN_PASSWORD` | 管理员密码 | `admin123` |
+| `BACKUP_SECRET_KEY` | 备份操作验证密钥 | 见 `.env.example` |
 | `TZ` | 服务器时区 | `Asia/Shanghai` |
 
 ## API 概览
@@ -139,7 +130,7 @@ cd adminapp && npm run build      # 输出 → adminapp/dist/
 | `/api/activities/:id` | PUT | JWT | 更新活动 |
 | `/api/activities/:id` | DELETE | JWT | 删除活动（软删除） |
 | `/api/activities/:id/reactions` | GET/POST | 否 | 获取/切换表情表态 |
-| `/api/activities/:id/messages` | GET/POST | 否 | 获取/创建积木文留言 |
+| `/api/activities/:id/messages` | GET/POST | 否 | 获取/创建拼词留言 |
 | `/api/messages/:id/like` | POST | 否 | 切换留言点赞 |
 | `/api/feedbacks` | GET/POST | 混合 | 提交/管理反馈 |
 | `/api/analytics/stats` | GET | JWT | 仪表盘统计数据 |
